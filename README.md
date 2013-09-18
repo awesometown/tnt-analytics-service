@@ -1,4 +1,1 @@
-tnt-analytics
-=============
-
-TNT Analytics Service
+# TNT Analytics Service
