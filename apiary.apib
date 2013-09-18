@@ -1,0 +1,107 @@
+HOST: http://analytics.tnt-ea.com
+
+--- Analytics ---
+
+---
+TNT Analytics Service API
+---
+
+-- 
+Version Resource
+--
+
+GET /rest/version
+> Content-Type: application/json
+< 200
+{
+    "serviceName": "TNT Analytics Service",
+    "serviceVersion": "0.0.1-SNAPSHOT",
+    "apiVersion": "v1"
+}
+
+-- 
+Event Resources 
+Resources for use in tracking events
+--
+
+Track an event.
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+    "event": {
+        "name": "Logged In"
+    }
+}
+< 201
+
+Track an event with a timestamp.
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+    "event": {
+        "name": "Logged In",
+        "properties": {
+            "timestamp": 1377720801803
+        }
+    }
+}
+< 201
+
+Track an event with a user id.
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+    "event": {
+        "name": "Logged In,
+        "properties": {
+            "distinctId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        }
+    }
+}
+< 201
+
+Track an event with custom properties.
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+    "event": {
+        "name": "Some Custom Event",
+        "properties": {
+            "distinctId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+            "timestamp": 1377720801803,
+            "customValue": 4.5
+        }
+    }
+}
+< 201
+
+-- 
+Event Log Resources 
+Resources for use in tracking events
+--
+
+Track an event log.
+
+POST /rest/v1/games/:gameId/eventlog
+> Content-Type: application/json
+{
+    "events": [
+        {
+            "name": "Logged In",
+            "properties": {
+                "timestamp": 1377720801803
+            }
+        },
+        {
+            "name": "Logged Out",
+            "properties": {
+                "timestamp": 1377720801803
+            }
+        }
+    ]
+}
+< 201
