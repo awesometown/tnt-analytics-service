@@ -30,7 +30,7 @@ POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
     "event": {
-        "name": "Logged In"
+        "name": "ad-shown"
     }
 }
 < 201
@@ -41,9 +41,9 @@ POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
     "event": {
-        "name": "Logged In",
+        "name": "ad-shown",
         "properties": {
-            "timestamp": 1377720801803
+            "timestamp": "2013-11-11T13:24:587Z"
         }
     }
 }
@@ -57,13 +57,13 @@ POST /rest/v1/games/:gameId/events
     "event": {
         "name": "Logged In,
         "properties": {
-            "distinctId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
         }
     }
 }
 < 201
 
-Track an event with custom properties.
+Track an event with custom properties.  Custom properties can be any of the following: strings, integers, decimal numbers, timestamps.
 
 POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
@@ -71,9 +71,12 @@ POST /rest/v1/games/:gameId/events
     "event": {
         "name": "Some Custom Event",
         "properties": {
-            "distinctId": "2501b552-a469-4e04-93b1-1e3c34523d85",
-            "timestamp": 1377720801803,
-            "customValue": 4.5
+            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+            "timestamp": "2013-11-11T13:24:587Z"
+            "customString": "something",
+            "customTimestamp": "2013-11-11T13:24:587Z",
+            "customDecimal": 2.5,
+            "customInteger": 5
         }
     }
 }
@@ -91,15 +94,15 @@ POST /rest/v1/games/:gameId/eventlog
 {
     "events": [
         {
-            "name": "Logged In",
+            "name": "ad-shown",
             "properties": {
-                "timestamp": 1377720801803
+                "timestamp": "2013-11-11T13:24:587Z"
             }
         },
         {
-            "name": "Logged Out",
+            "name": "ad-clicked",
             "properties": {
-                "timestamp": 1377720801803
+                "timestamp": "2013-11-11T13:25:587Z"
             }
         }
     ]
