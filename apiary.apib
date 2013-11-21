@@ -116,6 +116,7 @@ Below are some examples of sending ad events to the TNT Analytics Service.  Ad e
 sent to the `events` or `eventlog` endpoints listed above, but conform to a certain format.
 
 To track ad events, some particular fields should be included to allow for thorough reporting.  These include:
+
 * `name` - The name of the event (See below for possible values)
 * `properties.timestamp` - The timestamp (full date and time stamp in ISO 8601 format) that the event happened
 * `properties.userId` - The id of the user
@@ -124,12 +125,14 @@ To track ad events, some particular fields should be included to allow for thoro
 
 # Name
 The `name` field must have one of the following values:
+
 * `ad-requested` - An ad was requested from the ad provider
 * `ad-shown` - An ad was shown to a user
 * `ad-clicked` - An ad was clicked by a user
 
 # Type
 The `properties.type` field can have any of the following values:
+
 * `banner` - Type of ad was a banner ad
 * `interstitial` - Type of ad was an interstitial ad
 * `offerwall` - Type of ad was an offer wall
@@ -139,6 +142,7 @@ field if none of the above listed types apply.
 
 # Provider
 The `properties.provider` field can have any of the following values:
+
 * `google` - Ad provider was Google (AdMob)
 * `burstly` - Ad provider was Burstly
 
