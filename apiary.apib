@@ -6,7 +6,7 @@ HOST: http://analytics.tnt-ea.com
 TNT Analytics Service API
 ---
 
--- 
+--
 Version Resource
 --
 
@@ -20,8 +20,8 @@ GET /rest/version
 }
 
 -- 
-Event Resources 
-Resources for use in tracking events
+Event Resource
+Resource for use in tracking events
 --
 
 Track an event.
@@ -30,7 +30,7 @@ POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
     "event": {
-        "name": "ad-shown"
+        "name": "logged-in"
     }
 }
 < 201
@@ -41,7 +41,7 @@ POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
     "event": {
-        "name": "ad-shown",
+        "name": "logged-in",
         "properties": {
             "timestamp": "2013-11-11T13:24:587Z"
         }
@@ -55,7 +55,7 @@ POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
     "event": {
-        "name": "Logged In,
+        "name": "logged-in,
         "properties": {
             "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
         }
@@ -69,7 +69,7 @@ POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
     "event": {
-        "name": "Some Custom Event",
+        "name": "logged-in",
         "properties": {
             "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
             "timestamp": "2013-11-11T13:24:587Z"
@@ -94,17 +94,108 @@ POST /rest/v1/games/:gameId/eventlog
 {
     "events": [
         {
-            "name": "ad-shown",
+            "name": "logged-in",
             "properties": {
                 "timestamp": "2013-11-11T13:24:587Z"
             }
         },
         {
-            "name": "ad-clicked",
+            "name": "logged-in",
             "properties": {
                 "timestamp": "2013-11-11T13:25:587Z"
             }
         }
     ]
+}
+< 201
+
+--
+Tracking Ad Events
+
+Below are some examples of sending ad events to the TNT Analytics Service.  Ad events are just regular events, 
+sent to the `events` or `eventlog` endpoints listed above, but conform to a certain format.
+
+To track ad events, some particular fields should be included to allow for thorough reporting.  These include:
+* `name` - The name of the event (See below for possible values)
+* `properties.timestamp` - The timestamp (full date and time stamp in ISO 8601 format) that the event happened
+* `properties.userId` - The id of the user
+* `properties.type` - The type of ad (See below for possible values)
+* `properties.provider` - The provider of the ad (See below for possible values)
+
+# Name
+The `name` field must have one of the following values:
+* `ad-requested` - An ad was requested from the ad provider
+* `ad-shown` - An ad was shown to a user
+* `ad-clicked` - An ad was clicked by a user
+
+# Type
+The `properties.type` field can have any of the following values:
+* `banner` - Type of ad was a banner ad
+* `interstitial` - Type of ad was an interstitial ad
+* `offerwall` - Type of ad was an offer wall
+
+**Note**: Arbitrary ad types are supported by the `properties.type` 
+field if none of the above listed types apply.
+
+# Provider
+The `properties.provider` field can have any of the following values:
+* `google` - Ad provider was Google (AdMob)
+* `burstly` - Ad provider was Burstly
+
+**Note**: Arbitrary ad providers are supported by the `properties.provider` 
+field if none of the above listed providers apply.
+
+# Examples
+
+--
+
+Ad Requested
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+    "event": {
+        "name": "ad-requested",
+        "properties": {
+            "timestamp": "2013-11-11T13:25:587Z",
+            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+            "type": "banner",
+            "provider": "google"
+        }
+    }
+}
+< 201
+
+Ad Shown
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+    "event": {
+        "name": "ad-shown",
+        "properties": {
+            "timestamp": "2013-11-11T13:25:587Z",
+            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+            "type": "banner",
+            "provider": "google"
+        }
+    }
+}
+< 201
+
+Ad Clicked
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+    "event": {
+        "name": "ad-clicked",
+        "properties": {
+            "timestamp": "2013-11-11T13:25:587Z",
+            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+            "type": "banner",
+            "provider": "google"
+        }
+    }
 }
 < 201
