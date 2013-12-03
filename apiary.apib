@@ -22,7 +22,49 @@ GET /rest/version
 
 -- 
 Event Resource
+
 Resource for use in tracking events
+
+Fields:
+
+* `name`- The name of the event.
+    * This field is **required**, the event will be in an **error** state if this field is not specified.
+* `parameters.userId` - The id of the user.  This can be any unique identifier for the user (this can be the users' tntId, if available). Please ensure you are sending a consistent user id for the same user to ensure valid reports.
+    * This field is **required**, the event will be in an **error** state if this field is not specified.
+* `parameters.platform` - Platform the user is playing on
+    * This field is **required**, the event will be in an **error** state if this field is not specified.
+* `parameters.sessionId` - A unique identifier for the users' session
+    * This field is **required**, the event will be in an **error** state if this field is not specified.
+* `parameters.type` - A type for this event
+    * This field is **recommended**, the event will be in an **warning** state if this field is not specified. 
+    A default of `unknown` will be applied.
+* `parameters.timestamp` - The timestamp representing the time this event happened.
+    * This field is **recommended**, the event will be in an **warning** state if this field is not specified.
+* `parameters.tntId` - The tnt id of the user (if available)
+    * This field is **recommended**
+    
+# Platform
+
+The `parameters.platform` field can have any of the following values:
+
+* `apple` - If the user is playing on an Apple device
+* `google` - If the user is playing on a Google device
+* `amazon` - If the user is playing on an Amazon device
+
+**Note**: If none of the above platforms are specified, the platform will be specified as `unknown`.
+In this case the event will be considered in an error state, and will be published to the error output location and will not be available in any reports.
+
+
+# Type
+
+The `parameters.type` field can have any of the following values:
+
+* `tnt` - For events whose format is specified by TNT in this document.
+* `custom` - For custom events.
+
+**Note**: If none of the above types are specified, the platform will be specified as `unknown`.
+In this case the event will be published to the unknown type output location and will not be available in any reports.
+
 --
 
 Track an event.
@@ -30,9 +72,18 @@ Track an event.
 POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
-    "event": {
-        "name": "logged-in"
+  "event": 
+    {
+      "name": "log-in",
+      "parameters": {
+        "userId": "1234",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386105886413
     }
+  }
 }
 < 201
 
