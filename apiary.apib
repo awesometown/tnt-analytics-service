@@ -25,25 +25,30 @@ Event Resource
 
 Resource for use in tracking events
 
-Fields:
+# Field: Name
 
-* `name`- The name of the event.
-    * This field is **required**, the event will be in an **error** state if this field is not specified.
-* `parameters.userId` - The id of the user.  This can be any unique identifier for the user (this can be the users' tntId, if available). Please ensure you are sending a consistent user id for the same user to ensure valid reports.
-    * This field is **required**, the event will be in an **error** state if this field is not specified.
-* `parameters.platform` - Platform the user is playing on
-    * This field is **required**, the event will be in an **error** state if this field is not specified.
-* `parameters.sessionId` - A unique identifier for the users' session
-    * This field is **required**, the event will be in an **error** state if this field is not specified.
-* `parameters.type` - A type for this event
-    * This field is **recommended**, the event will be in an **warning** state if this field is not specified. 
-    A default of `unknown` will be applied.
-* `parameters.timestamp` - The timestamp representing the time this event happened.
-    * This field is **recommended**, the event will be in an **warning** state if this field is not specified.
-* `parameters.tntId` - The tnt id of the user (if available)
-    * This field is **recommended**
-    
-# Platform
+* Field: `name`
+* Type: String
+* Required: Yes
+
+**Note:** If this field is not specified in the request, the event will be considered in an **error** state.
+Events in an error state will be published to the error output location, and not available in any reports.
+
+# Field: User Id
+
+* Field: `parameters.userId`
+* Type: String
+* Required: Yes
+
+**Note:** If this field is not specified in the request, the event will be considered in an **error** state.
+Events in an error state will be published to the error output location, and not available in any reports.
+
+
+# Field: Platform
+
+* Field: `parameters.platform`
+* Type: String
+* Required: Yes
 
 The `parameters.platform` field can have any of the following values:
 
@@ -54,8 +59,20 @@ The `parameters.platform` field can have any of the following values:
 **Note**: If none of the above platforms are specified, the platform will be specified as `unknown`.
 In this case the event will be considered in an error state, and will be published to the error output location and will not be available in any reports.
 
+# Field: Session Id
 
-# Type
+* Field: `parameters.sessionId`
+* Type: String
+* Required: Yes
+
+**Note:** If this field is not specified in the request, the event will be considered in an **error** state.
+Events in an error state will be published to the error output location, and not available in any reports.
+
+# Field: Type
+
+* Field: `parameters.type`
+* Type: String
+* Required: Yes
 
 The `parameters.type` field can have any of the following values:
 
@@ -64,6 +81,24 @@ The `parameters.type` field can have any of the following values:
 
 **Note**: If none of the above types are specified, the platform will be specified as `unknown`.
 In this case the event will be published to the unknown type output location and will not be available in any reports.
+
+# Field: Timestamp
+
+* Field: `parameters.timestamp`
+* Type: Long (milliseconds since epoch)
+* Required: No
+
+**Note**: If a timestamp is not specified, the server will fill in this field with the current server time.
+It is recommended to send your own timestamp, to ensure accurracy of reports.
+
+# Field: TNT Id
+
+* Field: `parameters.tntId`
+* Type: String
+* Required: No
+
+**Note**: Though not required, it is recommended to send a TNT Id in your request (if available).
+Sending a TNT Id will allow for cross service querying and reporting.
 
 --
 
@@ -87,50 +122,27 @@ POST /rest/v1/games/:gameId/events
 }
 < 201
 
-Track an event with a timestamp.
+Track an event with custom parameters.  Custom parameters can be any of the following: strings, integers, decimal numbers, timestamps.
 
 POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
-    "event": {
-        "name": "logged-in",
-        "properties": {
-            "timestamp": "2013-11-11T13:24:587Z"
-        }
+  "event": 
+    {
+      "name": "log-in",
+      "parameters": {
+        "userId": "1234",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386105886413
+        "customString": "something",
+        "customTimestamp": "2013-11-11T13:24:587Z",
+        "customDecimal": 2.5,
+        "customInteger": 5
     }
-}
-< 201
-
-Track an event with a user id.
-
-POST /rest/v1/games/:gameId/events
-> Content-Type: application/json
-{
-    "event": {
-        "name": "logged-in,
-        "properties": {
-            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
-        }
-    }
-}
-< 201
-
-Track an event with custom properties.  Custom properties can be any of the following: strings, integers, decimal numbers, timestamps.
-
-POST /rest/v1/games/:gameId/events
-> Content-Type: application/json
-{
-    "event": {
-        "name": "logged-in",
-        "properties": {
-            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
-            "timestamp": "2013-11-11T13:24:587Z"
-            "customString": "something",
-            "customTimestamp": "2013-11-11T13:24:587Z",
-            "customDecimal": 2.5,
-            "customInteger": 5
-        }
-    }
+  }
 }
 < 201
 
@@ -146,20 +158,32 @@ POST /rest/v1/games/:gameId/eventlog
 {
     "events": [
         {
-            "name": "logged-in",
-            "properties": {
-                "timestamp": "2013-11-11T13:24:587Z"
-            }
+            "name": "log-in",
+            "parameters": {
+                "userId": "1234",
+                "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+                "platform":"apple",
+                "sessionId":"1234567890",
+                "type":"tnt",
+                "timestamp": 1386105886413
         },
         {
-            "name": "logged-in",
-            "properties": {
-                "timestamp": "2013-11-11T13:25:587Z"
-            }
+            "name": "log-out",
+            "parameters": {
+                "userId": "1234",
+                "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+                "platform":"apple",
+                "sessionId":"1234567890",
+                "type":"tnt",
+                "timestamp": 1386105886413
         }
     ]
 }
 < 201
+
+--
+Analytics API Responses
+--
 
 --
 Tracking Ad Events
@@ -167,92 +191,310 @@ Tracking Ad Events
 Below are some examples of sending ad events to the TNT Analytics Service.  Ad events are just regular events, 
 sent to the `events` or `eventlog` endpoints listed above, but conform to a certain format.
 
-To track ad events, some particular fields should be included to allow for thorough reporting.  These include:
+**Note**: Ad events must also conform to the documentation for the `events` endpoint listed above.
 
-* `name` - The name of the event (See below for possible values)
-* `properties.timestamp` - The timestamp (full date and time stamp in ISO 8601 format) that the event happened
-* `properties.userId` - The id of the user.  This can be any unique identifier for the user (tntId is recommended if available). Please ensure you are sending a consistent user id for the same user to ensure valid reports.
-* `properties.type` - The type of ad (See below for possible values)
-* `properties.provider` - The provider of the ad (See below for possible values)
+# Field: Name
 
-# Name
-The `name` field must have one of the following values:
+To be considered an ad event, the `name` field must have one of the following values:
 
-* `ad-request` - An ad was requested from the ad provider
-* `ad-request-success` - An ad was successfully recieved from the ad provider
-* `ad-request-fail` - An ad was not successfully recieved from the ad provider
-* `ad-clicked` - An ad was clicked by a user
+* `ad-requested` - An ad was requested from the ad provider
+* `ad-request-failed` - An ad was not recieved from the ad provider (if an ad was not available, or the provider returned an exception)
+* `ad-shown` - An ad was shown to the user
+* `ad-action-completed` - An ad action was competed by the user (ie. banner ad clicked, offerwall offer completed etc.)
 
-# Type
-The `properties.type` field can have any of the following values:
+To track ad events, some additional fields should be included:
+
+* `parameters.adType` - The type of ad (See below for possible values)
+* `parameters.adProvider` - The provider of the ad (See below for possible values)
+
+# Field: Ad Type
+
+* Field: `parameters.adType`
+* Type: String
+* Required: Yes
+
+The `parameters.adType` field can have any of the following values:
 
 * `banner` - Type of ad was a banner ad
 * `interstitial` - Type of ad was an interstitial ad
 * `offerwall` - Type of ad was an offer wall
 
-**Note**: Arbitrary ad types are supported by the `properties.type` 
-field if none of the above listed types apply.
+**Note:** If this field is not specified in the request, the event will be considered in an **error** state.
+Events in an error state will be published to the error output location, and not available in any reports.
 
-# Provider
-The `properties.provider` field can have any of the following values:
+# Field: Ad Provider
 
-* `google` - Ad provider was Google (AdMob)
+* Field: `parameters.adProvider`
+* Type: String
+* Required: Yes
+
+**Note:** If this field is not specified in the request, the event will be considered in an **error** state.
+Events in an error state will be published to the error output location, and not available in any reports. 
+
+The `parameters.adProvider` field can have any of the following values:
+
+* `admob` - Ad provider was AdMob
 * `burstly` - Ad provider was Burstly
 
-**Note**: Arbitrary ad providers are supported by the `properties.provider` 
-field if none of the above listed providers apply.
+# Additional Fields
+
+Some additional fields are supported based on which Ad Provider is specified:
+
+If the Ad Provider is `admob`, the following additional fields are supported:
+
+* `parameters.adPublisherId` - The AdMob publisher id
+
+If the Ad Provider is `burstly`, the following additional fields are supported:
+
+* `parameters.adAppId` - The Burstly App Id
+* `parameters.adZoneId` - The Burstly Zone Id
+
+If the Ad Provider is `burstly` and the Ad Type is `offerwall` or `ea2`, 
+the following additional fields are supported:
+
+* `parameters.adCurrencyId` - The in-game currency id given to the user (if an offer was completed)
+* `parameters.adCurrencyAmount` - The amount of in-game currency awarded to the user (if an offer was completed)
 
 # Examples
 
 --
 
-Ad Requested
+Ad Requested (Burstly)
 
 POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
-    "event": {
-        "name": "ad-requested",
-        "properties": {
-            "timestamp": "2013-11-11T13:25:587Z",
-            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
-            "type": "banner",
-            "provider": "google"
-        }
+  "event": 
+    {
+      "name": "ad-requested",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "burstly",
+        "adType": "banner",
+        "adAppId": "1234",
+        "adZoneId": "2345"
     }
+  }
 }
-< 201
+< 202
 
-Ad Shown
+Ad Requested (AdMob)
 
 POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
-    "event": {
-        "name": "ad-shown",
-        "properties": {
-            "timestamp": "2013-11-11T13:25:587Z",
-            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
-            "type": "banner",
-            "provider": "google"
-        }
+  "event": 
+    {
+      "name": "ad-requested",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "admob",
+        "adType": "banner",
+        "adPublisherId": "0987654321"
     }
+  }
 }
-< 201
+< 202
 
-Ad Clicked
+Ad Request Failed (Burstly)
 
 POST /rest/v1/games/:gameId/events
 > Content-Type: application/json
 {
-    "event": {
-        "name": "ad-clicked",
-        "properties": {
-            "timestamp": "2013-11-11T13:25:587Z",
-            "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
-            "type": "banner",
-            "provider": "google"
-        }
+  "event": 
+    {
+      "name": "ad-request-failed",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "burstly",
+        "adType": "banner",
+        "adAppId": "1234",
+        "adZoneId": "2345"
     }
+  }
 }
-< 201
+< 202
+
+Ad Request Failed (AdMob)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-request-failed",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "admob",
+        "adType": "banner",
+        "adPublisherId": "0987654321"
+    }
+  }
+}
+< 202
+
+Ad Shown (Burstly)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-shown",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "burstly",
+        "adType": "banner",
+        "adAppId": "1234",
+        "adZoneId": "2345"
+    }
+  }
+}
+< 202
+
+Ad Shown (AdMob)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-shown",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "admob",
+        "adType": "banner",
+        "adPublisherId": "0987654321"
+    }
+  }
+}
+< 202
+
+Ad Action Completed (Burstly)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-action-completed",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "burstly",
+        "adType": "banner",
+        "adAppId": "1234",
+        "adZoneId": "2345"
+    }
+  }
+}
+< 202
+
+Ad Action Completed (AdMob)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-action-completed",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "admob",
+        "adType": "banner",
+        "adPublisherId": "0987654321"
+    }
+  }
+}
+< 202
+
+Ad Action Completed (Burstly Offerwall)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-action-completed",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "burstly",
+        "adType": "offerwall",
+        "adAppId": "1234",
+        "adZoneId": "2345",
+        "adCurrencyId": "coins",
+        "adCurrencyAmount": 50
+    }
+  }
+}
+< 202
+
+Ad Action Completed (Burstly EA2)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-action-completed",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "burstly",
+        "adType": "ea2",
+        "adAppId": "1234",
+        "adZoneId": "2345",
+        "adCurrencyId": "coins",
+        "adCurrencyAmount": 50
+    }
+  }
+}
+< 202
