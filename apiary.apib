@@ -185,6 +185,199 @@ POST /rest/v1/games/:gameId/eventlog
 Analytics API Responses
 --
 
+Successful Response
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "log-in",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403
+    }
+  }
+}
+< 202
+{
+    "results": [
+        {
+            "event": {
+                "name": "log-in",
+                "parameters": {
+                    "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+                    "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+                    "platform": "apple",
+                    "sessionId": "1234567890",
+                    "type": "tnt",
+                    "timestamp": 1386168467403,
+                    "serverTimestamp": 1386169997104,
+                    "gameId": "pogs"
+                }
+            },
+            "result": {
+                "warnings": false,
+                "errors": false,
+                "fieldMessages": []
+            }
+        }
+    ]
+}
+
+Warning Response
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "log-in",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt"
+    }
+  }
+}
+< 202
+{
+    "results": [
+        {
+            "event": {
+                "name": "log-in",
+                "parameters": {
+                    "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+                    "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+                    "platform": "apple",
+                    "sessionId": "1234567890",
+                    "type": "tnt",
+                    "serverTimestamp": 1386170056017,
+                    "gameId": "pogs",
+                    "timestamp": 1386168467403
+                }
+            },
+            "result": {
+                "warnings": true,
+                "errors": false,
+                "fieldMessages": [
+                    {
+                        "fieldName": "parameters.timestamp",
+                        "level": "WARN",
+                        "message": "You did not specify a timestamp in your request, setting timestamp to server time for this event. If possible you should specify your own timestamp for report accurracy."
+                    }
+                ]
+            }
+        }
+    ]
+}
+
+Error Response
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "log-in",
+      "parameters": {
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403
+    }
+  }
+}
+< 202
+{
+    "results": [
+        {
+            "event": {
+                "name": "log-in",
+                "parameters": {
+                    "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+                    "platform": "apple",
+                    "sessionId": "1234567890",
+                    "type": "error",
+                    "timestamp": 1386168467403,
+                    "serverTimestamp": 1386170162181,
+                    "gameId": "pogs"
+                }
+            },
+            "result": {
+                "warnings": false,
+                "errors": true,
+                "fieldMessages": [
+                    {
+                        "fieldName": "parameters.userId",
+                        "level": "ERROR",
+                        "message": "You did not specify a userId in your request. Since userId is a required field, this event will be published to the error output location and not included in any reports."
+                    }
+                ]
+            }
+        }
+    ]
+}
+
+Multiple Response Messages
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "log-in",
+      "parameters": {
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt"
+    }
+  }
+}
+< 202
+{
+    "results": [
+        {
+            "event": {
+                "name": "log-in",
+                "parameters": {
+                    "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+                    "platform": "apple",
+                    "sessionId": "1234567890",
+                    "type": "error",
+                    "serverTimestamp": 1386170190793,
+                    "gameId": "pogs",
+                    "timestamp": 1386170190793
+                }
+            },
+            "result": {
+                "warnings": true,
+                "errors": true,
+                "fieldMessages": [
+                    {
+                        "fieldName": "parameters.userId",
+                        "level": "ERROR",
+                        "message": "You did not specify a userId in your request. Since userId is a required field, this event will be published to the error output location and not included in any reports."
+                    },
+                    {
+                        "fieldName": "parameters.timestamp",
+                        "level": "WARN",
+                        "message": "You did not specify a timestamp in your request, setting timestamp to server time for this event. If possible you should specify your own timestamp for report accurracy."
+                    }
+                ]
+            }
+        }
+    ]
+}
+
 --
 Tracking Ad Events
 
