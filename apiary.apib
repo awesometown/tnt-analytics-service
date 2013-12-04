@@ -395,12 +395,9 @@ To be considered an ad event, the `name` field must have one of the following va
 * `ad-shown` - An ad was shown to the user
 * `ad-action-completed` - An ad action was competed by the user (ie. banner ad clicked, offerwall offer completed etc.)
 
-To track ad events, some additional fields should be included:
-
-* `parameters.adType` - The type of ad (See below for possible values)
-* `parameters.adProvider` - The provider of the ad (See below for possible values)
-
 # Field: Ad Type
+
+The type of ad.
 
 * Field: `parameters.adType`
 * Type: String
@@ -417,6 +414,8 @@ Events in an error state will be published to the error output location, and not
 
 # Field: Ad Provider
 
+The provider of the ad
+
 * Field: `parameters.adProvider`
 * Type: String
 * Required: Yes
@@ -429,24 +428,45 @@ The `parameters.adProvider` field can have any of the following values:
 * `admob` - Ad provider was AdMob
 * `burstly` - Ad provider was Burstly
 
-# Additional Fields
+# Field: Ad Publisher Id
 
-Some additional fields are supported based on which Ad Provider is specified:
+The AdMob publisher id. Only specify this field if the Ad Provider is `admob`
 
-If the Ad Provider is `admob`, the following additional fields are supported:
+* Field: `parameters.adPublisherId`
+* Type: String
+* Required: No
 
-* `parameters.adPublisherId` - The AdMob publisher id
+# Field: Ad App Id
 
-If the Ad Provider is `burstly`, the following additional fields are supported:
+The Burstly App Id. Only specify this field if the Ad Provider is `burstly`
 
-* `parameters.adAppId` - The Burstly App Id
-* `parameters.adZoneId` - The Burstly Zone Id
+* Field: `parameters.adAppId`
+* Type: String
+* Required: No
 
-If the Ad Provider is `burstly` and the Ad Type is `offerwall` or `ea2`, 
-the following additional fields are supported:
+# Field: Ad Zone Id
 
-* `parameters.adCurrencyId` - The in-game currency id given to the user (if an offer was completed)
-* `parameters.adCurrencyAmount` - The amount of in-game currency awarded to the user (if an offer was completed)
+The Burstly Zone Id. Only specify this field if the Ad Provider is `burstly`
+
+* Field: `parameters.adZoneId`
+* Type: String
+* Required: No
+
+# Field: Ad Currency Id
+
+The Burstly Currency Id. Only specify this field if the Ad Provider is `burstly` and the Ad Type is `offerwall` or `ea2`
+
+* Field: `parameters.adCurrencyId`
+* Type: String
+* Required: No
+
+# Field: Ad Currency Amount
+
+The Burstly Currency Amount. Only specify this field if the Ad Provider is `burstly` and the Ad Type is `offerwall` or `ea2`
+
+* Field: `parameters.adCurrencyAmount`
+* Type: String
+* Required: No
 
 # Examples
 
