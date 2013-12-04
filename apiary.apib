@@ -148,7 +148,14 @@ POST /rest/v1/games/:gameId/events
 
 -- 
 Event Log Resources 
-Resources for use in tracking events
+Resources for use in tracking multiple events.
+
+Instead of making multiple requests to the `events` endpoint, you can batch events into a single request using
+the `eventlog` endpoint. 
+
+**Note**: Ad events tracked using the `eventlog` endpoint must also conform to the documentation for 
+the `events` endpoint listed above.
+
 --
 
 Track an event log.
