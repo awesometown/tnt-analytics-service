@@ -398,6 +398,7 @@ sent to the `events` or `eventlog` endpoints listed above, but conform to a cert
 To be considered an ad event, the `name` field must have one of the following values:
 
 * `ad-requested` - An ad was requested from the ad provider
+* `ad-not-requested` - An ad was not requested for the user (segmentation reasons, killswitch etc.)
 * `ad-request-failed` - An ad was not recieved from the ad provider (if an ad was not available, or the provider returned an exception)
 * `ad-shown` - An ad was shown to the user
 * `ad-action-completed` - An ad action was competed by the user (ie. banner ad clicked, offerwall offer completed etc.)
@@ -476,6 +477,27 @@ The Burstly Currency Amount. Only specify this field if the Ad Provider is `burs
 * Type: String
 * Required: No
 
+# Field: Ad Not Requested Reason
+
+A reason why an ad was not requested for the user. Only specify this field if the event name is `ad-not-requested`.
+
+* Field: `parameters.adNotRequestedReason`
+* Type: String
+* Required: Yes (only for ad-not-requested events)
+
+The `parameters.adNotRequestedReason` field can have any of the following values:
+
+* `killswitch` - The ad was not requested because of a killswitch
+* `coppa` - The ad was not requested because of COPPA regulations
+
+# Field: Ad Segmentation
+
+Name of the segmentation the user falls in
+
+* Field: `parameters.adSegmentation`
+* Type: String
+* Required: No
+
 # Examples
 
 --
@@ -522,6 +544,55 @@ POST /rest/v1/games/:gameId/events
         "adProvider": "admob",
         "adType": "banner",
         "adPublisherId": "0987654321"
+    }
+  }
+}
+< 202
+
+Ad Not Requested (Burstly)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-not-requested",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "burstly",
+        "adType": "banner",
+        "adAppId": "1234",
+        "adZoneId": "2345",
+        "adNotRequestedReason": "killswitch"
+    }
+  }
+}
+< 202
+
+Ad Not Requested (AdMob)
+
+POST /rest/v1/games/:gameId/events
+> Content-Type: application/json
+{
+  "event": 
+    {
+      "name": "ad-not-requested",
+      "parameters": {
+        "userId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "tntId": "2501b552-a469-4e04-93b1-1e3c34523d85",
+        "platform":"apple",
+        "sessionId":"1234567890",
+        "type":"tnt",
+        "timestamp": 1386168467403,
+        "adProvider": "admob",
+        "adType": "banner",
+        "adPublisherId": "0987654321",
+        "adNotRequestedReason": "coppa"
     }
   }
 }
